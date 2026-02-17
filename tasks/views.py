@@ -5,46 +5,66 @@ from .forms import *
 from django.conf import settings
 from .tmdb import discover_tv_top10
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
-# Create your views here.
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/")
+    else:
+        form = UserCreationForm()
+
+    return render(request, "tasks/signup.html", {"form": form})
+
+@login_required
 def index(request):
-	tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user).order_by("-created")
+    form = TaskForm()
 
-	form = TaskForm()
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.platform = "MANUAL"
+            task.provider_id = None
+            task.save()
+        return redirect('/')
 
-	if request.method == 'POST':
-		form = TaskForm(request.POST)
-		if form.is_valid():
-			#adds to the database if valid
-			form.save()
-		return redirect('/')
-
-	context= {'tasks':tasks,'form':form}
-	return render(request, 'tasks/list.html',context)
-
-def updateTask(request,pk):
-	task = Task.objects.get(id=pk)
-	form = TaskForm(instance=task)
-
-	if request.method == "POST":
-		form = TaskForm(request.POST,instance=task)
-		if form.is_valid():
-			form.save()
-			return redirect('/')
+    context = {'tasks': tasks, 'form': form}
+    return render(request, 'tasks/list.html', context)
 
 
-	context = {'form':form}
-	return render(request, 'tasks/update_task.html',context)
+@login_required
+def updateTask(request, pk):
+    task = Task.objects.get(id=pk, user=request.user)
+    form = TaskForm(instance=task)
 
-def deleteTask(request,pk):
-	item = Task.objects.get(id=pk)
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
 
-	if request.method == "POST":
-		item.delete()
-		return redirect('/')
+    return render(request, 'tasks/update_task.html', {'form': form})
 
-	context = {'item':item}
-	return render(request, 'tasks/delete.html', context)
+@login_required
+def deleteTask(request, pk):
+    item = Task.objects.get(id=pk, user=request.user)
+
+    if request.method == "POST":
+        item.delete()
+        return redirect('/')
+
+    return render(request, 'tasks/delete.html', {'item': item})
 
 def _next_page(request, key: str) -> int:
     """
@@ -55,16 +75,13 @@ def _next_page(request, key: str) -> int:
     request.session[session_key] = page + 1
     return page
 
+@login_required
 def import_netflix(request):
     if request.method != "POST":
         return redirect("/")
 
     page = _next_page(request, "NETFLIX")
-    shows = discover_tv_top10(
-        settings.TMDB_PROVIDER_NETFLIX,
-        region=getattr(settings, "TMDB_REGION", "FR"),
-        page=page,
-    )
+    shows = discover_tv_top10(settings.TMDB_PROVIDER_NETFLIX, region=getattr(settings, "TMDB_REGION", "FR"), page=page)
 
     for s in shows:
         tmdb_id = s.get("id")
@@ -72,6 +89,7 @@ def import_netflix(request):
             continue
 
         Task.objects.update_or_create(
+            user=request.user,
             platform="NETFLIX",
             provider_id=tmdb_id,
             defaults={
@@ -84,7 +102,7 @@ def import_netflix(request):
 
     return redirect("/")
 
-
+@login_required()
 def import_prime(request):
     if request.method != "POST":
         return redirect("/")
@@ -102,6 +120,7 @@ def import_prime(request):
             continue
 
         Task.objects.update_or_create(
+            user=request.user,
             platform="PRIME",
             provider_id=tmdb_id,
             defaults={
@@ -114,7 +133,7 @@ def import_prime(request):
 
     return redirect("/")
 
-
+@login_required()
 def import_apple(request):
     if request.method != "POST":
         return redirect("/")
@@ -132,6 +151,7 @@ def import_apple(request):
             continue
 
         Task.objects.update_or_create(
+            user=request.user,
             platform="APPLE",
             provider_id=tmdb_id,
             defaults={
@@ -144,10 +164,14 @@ def import_apple(request):
 
     return redirect("/")
 
-@require_POST
+@login_required
 def delete_all(request):
-    Task.objects.all().delete()
-    # optional: reset pagination so next import starts at page 1 again
+    if request.method != "POST":
+        return redirect("/")
+
+    Task.objects.filter(user=request.user).delete()
+
     for key in ["tmdb_page_NETFLIX", "tmdb_page_PRIME", "tmdb_page_APPLE"]:
         request.session.pop(key, None)
+
     return redirect("/")

@@ -50,6 +50,17 @@
 
 "><b>TO DO LIST</b></h1>
 <div  class="center-column">
+<p>
+  Connecté en tant que <b>{{ request.user.username }}</b> —
+</p>
+  <form method="post" action="{% url 'logout' %}" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-link p-0" style="vertical-align:baseline;">
+    Logout
+  </button>
+</form>
+
+
 	<form method="POST" action="/">
 		{% csrf_token %}
 		{{form.title}}
