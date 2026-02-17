@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.virtualenvs/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pipenv
+Pipfile.lock
+
+# Coverage / tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Migrations (optional — keep if you want clean repo)
+# tasks/migrations/*.py
+# !tasks/migrations/__init__.py

@@ -55,6 +55,30 @@
 		{{form.title}}
 		<input class="btn btn-info" type="submit" name="Create Task">
 	</form>
+<hr/>
+
+<form method="POST" action="{% url 'import_netflix' %}">
+  {% csrf_token %}
+  <button class="btn btn-dark btn-block" type="submit">Ajouter 10 séries Netflix</button>
+</form>
+
+<form method="POST" action="{% url 'import_prime' %}" style="margin-top:10px;">
+  {% csrf_token %}
+  <button class="btn btn-dark btn-block" type="submit">Ajouter 10 séries Prime Video</button>
+</form>
+
+<form method="POST" action="{% url 'import_apple' %}" style="margin-top:10px;">
+  {% csrf_token %}
+  <button class="btn btn-dark btn-block" type="submit">Ajouter 10 séries Apple TV+</button>
+</form>
+<form method="POST" action="{% url 'delete_all' %}" style="margin-top:10px;">
+  {% csrf_token %}
+  <button class="btn btn-danger btn-block" type="submit"
+          onclick="return confirm('Supprimer TOUTES les entrées ?');">
+    Delete all
+  </button>
+</form>
+
 
 	<div class="todo-list">
 	{% for task in tasks %}

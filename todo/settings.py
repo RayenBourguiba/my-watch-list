@@ -124,3 +124,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TMDB_REGION = "FR"
+TMDB_PROVIDER_NETFLIX = 8
+TMDB_PROVIDER_PRIME = 119
+TMDB_PROVIDER_APPLE = 350
+
