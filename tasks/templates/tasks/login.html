@@ -4,4 +4,14 @@
   {{ form.as_p }}
   <button type="submit">Login</button>
 </form>
+<hr>
+
+<a href="{% url 'fc_login' %}">
+  <button type="button">Se connecter avec FranceConnect</button>
+</a>
+<hr>
+<a href="{% url 'google_login' %}">
+  <button type="button">Se connecter avec Google</button>
+</a>
+
 <p>Pas de compte ? <a href="{% url 'signup' %}">Créer un compte</a></p>

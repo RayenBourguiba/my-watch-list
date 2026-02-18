@@ -9,4 +9,8 @@ urlpatterns = [
     path("import/prime/", views.import_prime, name="import_prime"),
     path("import/apple/", views.import_apple, name="import_apple"),
 	path("delete-all/", views.delete_all, name="delete_all"),
+	path("franceconnect/login/", views.franceconnect_login, name="fc_login"),
+	path("callback", views.franceconnect_callback, name="fc_callback"),
+	path("google/login/", views.google_login, name="google_login"),
+	path("google/callback/", views.google_callback, name="google_callback"),
 ]

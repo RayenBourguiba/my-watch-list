@@ -130,8 +130,27 @@ TMDB_PROVIDER_NETFLIX = 8
 TMDB_PROVIDER_PRIME = 119
 TMDB_PROVIDER_APPLE = 350
 
+FRANCECONNECT_ENABLED = True
+
+FRANCECONNECT_CLIENT_ID = "211286433e39cce01db448d80181bdfd005554b19cd51b3fe7943f6b3b86ab6e"
+FRANCECONNECT_CLIENT_SECRET = "2791a731e6a59f56b6b4dd0d08c9b1f593b5f3658b9fd731cb24248e2669af4b"
+
+FRANCECONNECT_REDIRECT_URI = "http://localhost:8080/callback"
+
+FRANCECONNECT_AUTHORIZE_URL = "https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"
+FRANCECONNECT_TOKEN_URL = "https://fcp.integ01.dev-franceconnect.fr/api/v1/token"
+FRANCECONNECT_USERINFO_URL = "https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"
+
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/login/"
 
+import os
 
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
+
+GOOGLE_OAUTH_REDIRECT_URI = "http://localhost:8080/google/callback/"
+GOOGLE_OAUTH_AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_OAUTH_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
