@@ -20,7 +20,7 @@ ENV/
 env/
 .venv/
 .virtualenvs/
-
+infra/.vagrant
 # IDE
 .idea/
 .vscode/
